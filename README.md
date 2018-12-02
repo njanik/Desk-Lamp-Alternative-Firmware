@@ -58,6 +58,7 @@ Upload a single file file to SPIFFS:
 Web-API
 -------
 To send commands to the desk lamp or read the state, the following HTTP-handlers are implemented:
+ * Power off: `http://192.168.2.99/poweroff`
  * Set color to 100% warmwhite: `http://192.168.2.99/color?ratio=1.0&brightness=1.0`
  * Set color to 100% coldwhite: `http://192.168.2.99/color?ratio=0.0&brightness=1.0`
  * Set color to 25% coldwhite and 25% warmwhite: `http://192.168.2.99/color?ratio=0.5&brightness=0.5`
@@ -67,3 +68,10 @@ To send commands to the desk lamp or read the state, the following HTTP-handlers
  * Reset / Restart the lamp: `http://192.168.2.99/reset`
  * Retrieve the config as JSON (does not expose the WiFi credentials): `http://192.168.2.99/config.json`
  * There are more URLs to flash the firmware and upload files for the webserver (namely: `unlock`, `edit`, `format`, `update`). To prevent unauthorized flashing of (malicious) firmware or webserver files at least a hardcoded password is required. If you worry about this password change it in the sourcedode and notice that HTTP does not encrypt it.
+
+MQTT-API
+--------
+For the moment,ON and OFF command exist:
+* Power ON: `desklamp/power/on`
+* Power OFF: `desklamp/power/off`
+* Toggle: `desklamp/toggle`
