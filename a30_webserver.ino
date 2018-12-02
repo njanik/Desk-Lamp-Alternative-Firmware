@@ -106,6 +106,14 @@ void handleColorGET() {
   root.printTo(json);
   server.send(200, "text/json", json);
 }
+/******************************************************************************
+Description.: handles a request to path "/poweroff"
+******************************************************************************/
+void handlePoweroffGET() {
+    Log("received poweroff");
+    state = LIGHTSOFF;
+    server.send(200, "text/plain", "poweroff");
+}
 
 /******************************************************************************
 Description.: handles uploaded files
@@ -121,17 +129,17 @@ void handleFileUpload() {
     server.send(200, "text/plain", "locked");
     return;
   }
-  
+
   if(server.uri() != "/edit") return;
-  
+
   HTTPUpload& upload = server.upload();
-  
+
   if(upload.status == UPLOAD_FILE_START){
     String filename = upload.filename;
-    
+
     if( !filename.startsWith("/") )
       filename = "/"+filename;
-   
+
     fsUploadFile = SPIFFS.open(filename, "w");
     filename = String();
   } else if(upload.status == UPLOAD_FILE_WRITE) {
@@ -162,7 +170,7 @@ void handleAllGET() {
       break;
     }
   }
-  
+
   root["ratio"] = g_ratio;
   root["brightness"] = g_brightness;
 
@@ -171,7 +179,7 @@ void handleAllGET() {
   root["RSSI"] = WiFi.RSSI();
 
   root.printTo(json);
-  server.send(200, "text/json", json);  
+  server.send(200, "text/json", json);
 }
 
 /******************************************************************************
@@ -224,6 +232,7 @@ void setup_webserver() {
 
   server.on("/all", HTTP_GET, handleAllGET);
   server.on("/color", HTTP_GET, handleColorGET);
+  server.on("/poweroff", HTTP_GET, handlePoweroffGET);
   server.on("/config.json", HTTP_GET, handleConfigGET);
 
   /* deleted the files present on SPIFFS file system */
@@ -232,11 +241,11 @@ void setup_webserver() {
       server.send(200, "text/plain", "locked");
       return;
     }
-    
+
     String result=SPIFFS.format()?"OK":"NOK";
     server.send(200, "text/plain", result);
     });
-    
+
   server.on("/reset", HTTP_GET, [](){
     server.send(200, "text/plain", "restarting...");
     ESP.restart();
@@ -247,7 +256,7 @@ void setup_webserver() {
       enableUpdates = true;
       httpUpdater.setup(&server, "/update");
     }
-    
+
     server.send(200, "text/plain", "enableUpdates: "+String(enableUpdates));
     });
 
@@ -260,16 +269,16 @@ void setup_webserver() {
         response += String(counter) + ": " + (*i) + "\n";
         counter++;
     }
-    
+
     server.send(200, "text/plain", response);
     });
-  
-  server.on("/edit", HTTP_POST, [](){ 
+
+  server.on("/edit", HTTP_POST, [](){
     if ( !enableUpdates ) {
       server.send(200, "text/plain", "locked");
       return;
     }
-    
+
     server.send(200, "text/plain", "");
     }, handleFileUpload);
 
@@ -282,5 +291,5 @@ Input Value.: -
 Return Value: -
 ******************************************************************************/
 void loop_webserver() {
-  server.handleClient();  
+  server.handleClient();
 }
