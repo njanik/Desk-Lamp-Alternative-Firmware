@@ -161,22 +161,22 @@ Return Value: -
 void setup_LEDs() {
   pinMode(WARMWHITE_PIN, OUTPUT);
   pinMode(COLDWHITE_PIN, OUTPUT);
-  
+
   analogWriteFreq(500);
   analogWriteRange(255);
 
   animation_context.next_ww = 0;
   animation_context.next_cw = 0;
-  
+
   animation_context.previous_ww = 0;
   animation_context.previous_cw = 0;
-  
+
   animation_context.current_ww = 0;
   animation_context.current_cw = 0;
 
   animation_context.busy = false;
 
-  setLedsAnimatedRB(g_ratio, g_brightness, 1000);
+  setLedsAnimatedRB(g_ratio, g_brightness, 200);
 }
 
 /******************************************************************************
@@ -186,18 +186,18 @@ Return Value: -
 ******************************************************************************/
 void loop_LEDs() {
   uint8_t a;
-  
+
   switch(state) {
     case BOOTUP:
       setLedsAnimatedRB(g_ratio, g_brightness, 0);
       break;
-      
+
     case CONSTANTCOLOR:
-      setLedsAnimatedRB(g_ratio, g_brightness, 500);
+      setLedsAnimatedRB(g_ratio, g_brightness, 200);
       break;
 
     case LIGHTSOFF:
-      setLedsAnimated(0, 0, 2000);
+      setLedsAnimated(0, 0, 200);
       break;
 
     case RESET_CONFIGURATION:
