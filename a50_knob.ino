@@ -55,7 +55,7 @@ void setup_knob() {
       }
     }
   });
-  
+
   button.attachDoubleClick([](){
     Log("Double Click!");
   });
@@ -74,12 +74,13 @@ Return Value: -
 void loop_knob() {
   long knob_delta = knob.read();
   knob.write(0);
-  
+
   button.tick();
   resetSwitch.tick();
 
   if(knob_delta == 0)
     return;
+
 
   Log("Knob changed by: " + String(knob_delta) + ".");
 
@@ -90,7 +91,9 @@ void loop_knob() {
         g_ratio = constrain(g_ratio + 0.01*knob_delta, 0.0, 1.0);
         Log("ratio changed to: " + String(g_ratio) + ".");
       } else {
-        g_brightness = constrain(g_brightness + 0.01*knob_delta, 0.0, 1.0);
+
+        Log("knob_delta: " + String(knob_delta) + ".");
+        g_brightness = constrain(g_brightness + 0.02*knob_delta, 0.0, 1.0);
         Log("brightness changed to: " + String(g_brightness) + ".");
       }
       break;

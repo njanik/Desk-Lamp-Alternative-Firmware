@@ -29,14 +29,14 @@ Return Value: true if config read, false in case of error
 ******************************************************************************/
 bool loadConfig() {
   File configFile = SPIFFS.open("/config.json", "r");
-  
+
   if (!configFile || (configFile.size() > 1024)) {
     g_hostname = "XIAOMI-DESK-LAMP";
     state = CONSTANTCOLOR;
-    g_ratio = 1.0;
-    g_brightness = 1.0;
+    g_ratio = 0.5;
+    g_brightness = 1.5;
     g_send_WLAN_keep_alive_packet = true;
-    
+
     return false;
   }
 
@@ -58,7 +58,7 @@ bool loadConfig() {
   }
 
   g_hostname = strdup(json["hostname"]);
-  g_send_WLAN_keep_alive_packet = json["send_WLAN_keep_alive_packet"];  
+  g_send_WLAN_keep_alive_packet = json["send_WLAN_keep_alive_packet"];
   g_ratio = json["ratio"];
   g_brightness = json["brightness"];
 
@@ -80,7 +80,7 @@ void setup(void){
   log_messages.resize(LOG_LENGTH, "-");
   Log("XIAOMI Desk Lamp starting up");
   Log("Compiled at: " __DATE__ " - " __TIME__);
-  
+
   if( !SPIFFS.begin() ) {
     Log("SPIFFS not mounted correctly, retrying...");
     delay(1000);
@@ -102,11 +102,12 @@ void setup(void){
 
   // apply hostname
   wifi_station_set_hostname((char *)g_hostname.c_str());
-  
+
   setup_LEDs();
   setup_wifi();
   setup_webserver();
   setup_knob();
+  setup_mqtt();
 }
 
 /******************************************************************************
@@ -119,10 +120,11 @@ void loop(void) {
   loop_webserver();
   loop_LEDs();
   loop_knob();
+  loop_mqtt();
 
   if(state == RESET_CONFIGURATION) {
     Log("deleting configuration file /config.json");
-    
+
     SPIFFS.remove("/config.json");
 
     //keep running for ~5 more seconds, then restart
@@ -137,4 +139,3 @@ void loop(void) {
     ESP.restart();
   }
 }
-

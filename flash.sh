@@ -1,6 +1,6 @@
 #!/bin/bash
 
-IP="xiaomi_desk_lamp.fritz.box"
+IP="192.168.0.106"
 
 if [ $# -eq 1 ]; then
   IP="$1"
