@@ -54,25 +54,22 @@ void callback(char* topic, byte* payload, unsigned int length) {
   if(strcmp(topic, "desklamp/power") == 0) {
       Log("Received mqtt message");
       payload[length] = '\0';
-      byte power = atoi((char *)payload);
-      if(power) {
-           Log("SET CONSTANTCOLOR");
+      //byte power = atoi((char *)payload);
+      if(strcmp((char *) payload, "ON") == 0) {
+          Log("SET CONSTANTCOLOR");
           state = CONSTANTCOLOR;
-          client.publish("desklamp/status", "ON");
       }else {
           Log("SET LIGHTSOFF");
           state = LIGHTSOFF;
-          client.publish("desklamp/status", "OFF");
       }
 
   }
   if(strcmp(topic, "desklamp/toggle") == 0) {
       if(state == LIGHTSOFF) {
           state = CONSTANTCOLOR;
-          client.publish("desklamp/status", "ON");
+
       }else {
           state = LIGHTSOFF;
-          client.publish("desklamp/status", "OFF");
       }
   }
 
@@ -91,6 +88,18 @@ void loop_mqtt()
 
     if (!client.connected()) {
         reconnect();
-      }
-      client.loop();
+    }else {
+        if(prev_state != state) {
+
+            if(state == LIGHTSOFF) {
+                Log("LIGHTSOFF");
+                client.publish("desklamp/status", "OFF");
+            }else if(state == CONSTANTCOLOR) {
+                Log("CONSTANTCOLOR");
+                client.publish("desklamp/status", "ON");
+            }
+            prev_state = state;
+        }
+    }
+    client.loop();
 }

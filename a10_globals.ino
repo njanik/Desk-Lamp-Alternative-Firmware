@@ -41,6 +41,7 @@ struct {
   { RESET_CONFIGURATION, "Resetting all configurations", "reset_configuration" }
 };
 STATES state = UNDEF;
+STATES prev_state = UNDEF;
 
 /* Variables for the warm and cold white LEDs */
 float g_brightness, g_ratio;
