@@ -21,14 +21,11 @@ void reconnect() {
       // Once connected, publish an announcement...
       client.publish("desklamp", "connected");
       // ... and resubscribe
+
       client.subscribe("desklamp/power");
       client.loop();
       client.subscribe("desklamp/toggle");
       client.loop();
-      // client.subscribe("desklamp/color");
-      // client.loop();
-      // client.subscribe("desklamp/brightness");
-      // client.loop();
 
     } else {
       Serial.print("failed, rc=");
@@ -61,16 +58,21 @@ void callback(char* topic, byte* payload, unsigned int length) {
       if(power) {
            Log("SET CONSTANTCOLOR");
           state = CONSTANTCOLOR;
+          client.publish("desklamp/status", "ON");
       }else {
           Log("SET LIGHTSOFF");
           state = LIGHTSOFF;
+          client.publish("desklamp/status", "OFF");
       }
+
   }
   if(strcmp(topic, "desklamp/toggle") == 0) {
       if(state == LIGHTSOFF) {
           state = CONSTANTCOLOR;
+          client.publish("desklamp/status", "ON");
       }else {
           state = LIGHTSOFF;
+          client.publish("desklamp/status", "OFF");
       }
   }
 
