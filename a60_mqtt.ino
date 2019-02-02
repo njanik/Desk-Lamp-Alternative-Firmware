@@ -26,6 +26,8 @@ void reconnect() {
       client.loop();
       client.subscribe("desklamp/toggle");
       client.loop();
+      client.subscribe("desklamp/notification");
+      client.loop();
 
     } else {
       Serial.print("failed, rc=");
@@ -74,6 +76,11 @@ void callback(char* topic, byte* payload, unsigned int length) {
           state = LIGHTSOFF;
           client.publish("desklamp/status", "OFF");
       }
+  }
+  if(strcmp(topic, "desklamp/notification") == 0) {
+       Log("Received mqtt message: notification");
+      old_state = state;
+      state = NOTIFICATION;
   }
 
 }

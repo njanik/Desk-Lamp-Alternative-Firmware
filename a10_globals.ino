@@ -27,7 +27,7 @@
 #define LENGTH_OF(x) (sizeof(x)/sizeof(x[0]))
 
 /* current state of the device */
-enum STATES {UNDEF=0, CONSTANTCOLOR, BOOTUP, FLASH, LIGHTSOFF, RESET_CONFIGURATION};
+enum STATES {UNDEF=0, CONSTANTCOLOR, NOTIFICATION, BOOTUP, FLASH, LIGHTSOFF, RESET_CONFIGURATION};
 struct {
   STATES state;
   String human_readable_string;
@@ -35,15 +35,17 @@ struct {
 } state_map[] = {
   { UNDEF, "Undefined State", "undef" },
   { CONSTANTCOLOR,"Static Color Mode", "constantcolor" },
+  { NOTIFICATION,"Notification mode", "notification" },
   { BOOTUP, "Booting up...", "bootup" },
   { FLASH, "Flashing Firmware...", "flash" },
   { LIGHTSOFF, "Lights switched off", "lightsoff" },
   { RESET_CONFIGURATION, "Resetting all configurations", "reset_configuration" }
 };
 STATES state = UNDEF;
+STATES old_state = UNDEF;
 
 /* Variables for the warm and cold white LEDs */
-float g_brightness, g_ratio;
+float g_brightness, g_ratio, old_g_brightness, old_g_ratio;
 
 /* Hostname, this name will show up in DHCP requests */
 String g_hostname;

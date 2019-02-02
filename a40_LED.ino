@@ -196,6 +196,31 @@ void loop_LEDs() {
       setLedsAnimatedRB(g_ratio, g_brightness, 200);
       break;
 
+    case NOTIFICATION:
+
+      if(old_state == LIGHTSOFF){
+          setLedsAnimatedRB(g_ratio, g_brightness, 200);
+      }else{
+          old_g_ratio = g_ratio;
+          old_g_brightness = g_brightness;
+
+          g_ratio = 0.5;
+          g_brightness = 1.5;
+
+      }
+      for(int i=0; i<5; i++) {
+          setLedsAnimatedRB(g_ratio, g_brightness, 200);
+          setLedsAnimatedRB(g_ratio / 2, g_brightness / 2, 200);
+      }
+
+      g_ratio = old_g_ratio;
+      g_brightness = old_g_brightness;
+      state = old_state;
+      setLedsAnimatedRB(g_ratio, g_brightness, 1);
+
+
+      break;
+
     case LIGHTSOFF:
       setLedsAnimated(0, 0, 200);
       break;
