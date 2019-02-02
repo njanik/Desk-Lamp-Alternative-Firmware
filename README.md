@@ -21,6 +21,15 @@ The initial upload requires the following steps:
 3. Solder cables to `RX`, `TX` and `GPIO0`. `GND` is also required for programming, but depending on your programming cable this signal is easily accessible even when the PCB is put back in place. Soldering to the ESP8266 module will result in fragile connections. Because of that, I decided to provide cable support afterwards by applying hot-melt-glue, otherwise the connections would not last long when handled. A labeled [picture](pictures/IMG_9008.JPG) certainly helps.
 4. Put back the PCB-A, fasten the screws.
 5. Attach a 3.3V USB to serial adapter cable. Connect cables `GND` to `GND`, cables `Tx` to `Rx` and cables `Rx` to `Tx`. If you want to check correct wiring, power up the lamp and use the serial-monitor for any activity. Most likely it will just print gibberish due to mismatched baudrate, but this is enough to see `Rx` and `Tx` should be wired correctly; if there is no activity when powering the lamp try swapping the `Rx` and `Tx` lines.
+
+Arduino Settings:
+* Generic ESP8266 Module
+* CPU Frequency 80 Mhz
+* Flash Size 1 M (64k SPIFFS)
+* Flash Mode is QIO
+* Crystal Frequency is 26 MHz
+* Reset Method "ck"
+
 6. Connect GPIO0 to GND. Keep it pulled low until firmware has uploaded from the Arduino IDE.
 7. Compile the firmware and upload from within the Arduino IDE.
 8. Unconnect GPIO0 from GND, power-cycle the lamp and it should dim-up. The serial monitor should inform you about the startup (115200, 8N1).
@@ -28,11 +37,11 @@ The initial upload requires the following steps:
 Flashing updates via WiFi
 -------------------------
 Once the firmware has uploaded initially, you can reupload through WiFi using the BASH script (assuming the desk-lamp got the IP adress 192.168.2.99):
-    
+
     # ./flash.sh 192.168.2.99
 
 The stdout-messages should look as follows:
-    
+
     ./flash.sh 192.168.2.99
     enableUpdates: 1
     <META http-equiv="refresh" content="15;URL=/">Update Success! Rebooting...
@@ -40,7 +49,7 @@ The stdout-messages should look as follows:
 Monitoring log-messages
 -----------------------
 To monitor the log messages, use the `log.sh` BASH script. It refreshes the log messages every second.
-    
+
     ./log.sh 192.168.22.99
 
 Upload files for the webserver
@@ -50,10 +59,10 @@ The internal webserver serves files from SPIFFS. To fill SPIFFS the most conveni
 Uploading all files from `./data` to SPIFFS:
 
     ./upload_files.sh 192.168.2.99
-    
+
 Upload a single file file to SPIFFS:
 
-    ./upload_files.sh 192.168.2.99 myfile 
+    ./upload_files.sh 192.168.2.99 myfile
 
 Web-API
 -------
